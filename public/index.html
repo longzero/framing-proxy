@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Proxy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        input[type="url"] {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="url"]:focus {
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .examples {
+            margin-top: 40px;
+            text-align: left;
+        }
+
+        .examples h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .examples a {
+            display: block;
+            padding: 12px 20px;
+            margin: 8px 0;
+            background: #f8f9fa;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        .examples a:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            .form-group {
+                flex-direction: column;
+            }
+
+            input[type="url"] {
+                min-width: 100%;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Web Proxy</h1>
+        <p class="subtitle">Browse any website through our secure proxy</p>
+
+        <form onsubmit="proxyUrl(event)">
+            <div class="form-group">
+                <input type="url" id="urlInput" placeholder="https://example.com" required>
+                <button type="submit">Browse</button>
+            </div>
+        </form>
+
+        <div class="warning">
+            ⚠️ <strong>Note:</strong> This proxy is for educational purposes. Some websites may not work perfectly due to security restrictions.
+        </div>
+
+        <div class="examples">
+            <h3>📋 Try these examples:</h3>
+            <a href="/api/proxy?url=https://httpbin.org/html">HTTPBin HTML Test</a>
+            <a href="/api/proxy?url=https://example.com">Example.com</a>
+            <a href="/api/proxy?url=https://news.ycombinator.com">Hacker News</a>
+            <a href="/api/proxy?url=https://github.com">GitHub</a>
+        </div>
+    </div>
+
+    <script>
+        function proxyUrl(event) {
+            event.preventDefault();
+            const url = document.getElementById('urlInput').value.trim();
+
+            if (!url) {
+                alert('Please enter a valid URL');
+                return;
+            }
+
+            // Add https:// if no protocol specified
+            let finalUrl = url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                finalUrl = 'https://' + url;
+            }
+
+            // Validate URL format
+            try {
+                new URL(finalUrl);
+            } catch (e) {
+                alert('Please enter a valid URL');
+                return;
+            }
+
+            window.location.href = '/api/proxy?url=' + encodeURIComponent(finalUrl);
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                proxyUrl(e);
+            }
+        });
+    </script>
+</body>
+</html>
