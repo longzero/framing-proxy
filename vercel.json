@@ -1,0 +1,61 @@
+{
+  "files": {
+    "package.json": {
+      "name": "vercel-web-proxy",
+      "version": "1.0.0",
+      "description": "Web proxy service for Vercel",
+      "main": "index.js",
+      "scripts": {
+        "dev": "vercel dev",
+        "build": "echo 'No build step needed'",
+        "start": "vercel dev"
+      },
+      "dependencies": {
+        "axios": "^1.6.0",
+        "cheerio": "^1.0.0-rc.12"
+      },
+      "devDependencies": {
+        "@vercel/node": "^3.0.0"
+      },
+      "keywords": [
+        "proxy",
+        "web",
+        "vercel",
+        "serverless"
+      ],
+      "author": "Your Name",
+      "license": "MIT"
+    },
+    "vercel.json": {
+      "functions": {
+        "api/proxy.js": {
+          "maxDuration": 30
+        },
+        "api/resource.js": {
+          "maxDuration": 30
+        }
+      },
+      "headers": [
+        {
+          "source": "/api/(.*)",
+          "headers": [
+            {
+              "key": "Access-Control-Allow-Origin",
+              "value": "*"
+            },
+            {
+              "key": "Access-Control-Allow-Methods",
+              "value": "GET, POST, PUT, DELETE, OPTIONS"
+            },
+            {
+              "key": "Access-Control-Allow-Headers",
+              "value": "Content-Type, Authorization"
+            }
+          ]
+        }
+      ]
+    },
+    "public/index.html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Web Proxy</title>\n    <style>\n        * {\n            margin: 0;\n            padding: 0;\n            box-sizing: border-box;\n        }\n        \n        body {\n            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n            min-height: 100vh;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            padding: 20px;\n        }\n        \n        .container {\n            background: white;\n            padding: 40px;\n            border-radius: 20px;\n            box-shadow: 0 20px 40px rgba(0,0,0,0.1);\n            max-width: 600px;\n            width: 100%;\n            text-align: center;\n        }\n        \n        h1 {\n            color: #333;\n            margin-bottom: 10px;\n            font-size: 2.5em;\n            font-weight: 700;\n        }\n        \n        .subtitle {\n            color: #666;\n            margin-bottom: 30px;\n            font-size: 1.1em;\n        }\n        \n        .form-group {\n            margin: 20px 0;\n            display: flex;\n            gap: 10px;\n            flex-wrap: wrap;\n        }\n        \n        input[type=\"url\"] {\n            flex: 1;\n            min-width: 300px;\n            padding: 15px 20px;\n            font-size: 16px;\n            border: 2px solid #e1e8ed;\n            border-radius: 10px;\n            outline: none;\n            transition: border-color 0.3s ease;\n        }\n        \n        input[type=\"url\"]:focus {\n            border-color: #667eea;\n        }\n        \n        button {\n            padding: 15px 30px;\n            font-size: 16px;\n            font-weight: 600;\n            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n            color: white;\n            border: none;\n            border-radius: 10px;\n            cursor: pointer;\n            transition: transform 0.2s ease, box-shadow 0.2s ease;\n        }\n        \n        button:hover {\n            transform: translateY(-2px);\n            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);\n        }\n        \n        button:active {\n            transform: translateY(0);\n        }\n        \n        .examples {\n            margin-top: 40px;\n            text-align: left;\n        }\n        \n        .examples h3 {\n            color: #333;\n            margin-bottom: 15px;\n            font-size: 1.3em;\n        }\n        \n        .examples a {\n            display: block;\n            padding: 12px 20px;\n            margin: 8px 0;\n            background: #f8f9fa;\n            color: #495057;\n            text-decoration: none;\n            border-radius: 8px;\n            transition: all 0.2s ease;\n            border-left: 4px solid #667eea;\n        }\n        \n        .examples a:hover {\n            background: #e9ecef;\n            transform: translateX(5px);\n        }\n        \n        .warning {\n            background: #fff3cd;\n            border: 1px solid #ffeaa7;\n            color: #856404;\n            padding: 15px;\n            border-radius: 8px;\n            margin: 20px 0;\n            font-size: 0.9em;\n        }\n        \n        @media (max-width: 600px) {\n            .form-group {\n                flex-direction: column;\n            }\n            \n            input[type=\"url\"] {\n                min-width: 100%;\n            }\n            \n            .container {\n                padding: 20px;\n            }\n            \n            h1 {\n                font-size: 2em;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"container\">\n        <h1>🌐 Web Proxy</h1>\n        <p class=\"subtitle\">Browse any website through our secure proxy</p>\n        \n        <form onsubmit=\"proxyUrl(event)\">\n            <div class=\"form-group\">\n                <input type=\"url\" id=\"urlInput\" placeholder=\"https://example.com\" required>\n                <button type=\"submit\">Browse</button>\n            </div>\n        </form>\n        \n        <div class=\"warning\">\n            ⚠️ <strong>Note:</strong> This proxy is for educational purposes. Some websites may not work perfectly due to security restrictions.\n        </div>\n        \n        <div class=\"examples\">\n            <h3>📋 Try these examples:</h3>\n            <a href=\"/api/proxy?url=https://httpbin.org/html\">HTTPBin HTML Test</a>\n            <a href=\"/api/proxy?url=https://example.com\">Example.com</a>\n            <a href=\"/api/proxy?url=https://news.ycombinator.com\">Hacker News</a>\n            <a href=\"/api/proxy?url=https://github.com\">GitHub</a>\n        </div>\n    </div>\n    \n    <script>\n        function proxyUrl(event) {\n            event.preventDefault();\n            const url = document.getElementById('urlInput').value.trim();\n            \n            if (!url) {\n                alert('Please enter a valid URL');\n                return;\n            }\n            \n            // Add https:// if no protocol specified\n            let finalUrl = url;\n            if (!url.startsWith('http://') && !url.startsWith('https://')) {\n                finalUrl = 'https://' + url;\n            }\n            \n            // Validate URL format\n            try {\n                new URL(finalUrl);\n            } catch (e) {\n                alert('Please enter a valid URL');\n                return;\n            }\n            \n            window.location.href = '/api/proxy?url=' + encodeURIComponent(finalUrl);\n        }\n        \n        // Allow Enter key to submit\n        document.getElementById('urlInput').addEventListener('keypress', function(e) {\n            if (e.key === 'Enter') {\n                proxyUrl(e);\n            }\n        });\n    </script>\n</body>\n</html>",
+    ".gitignore": "node_modules/\n.env\n.env.local\n.vercel\ndist/\nbuild/\n*.log\n.DS_Store"
+  }
+}
